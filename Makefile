@@ -51,7 +51,7 @@ all: check okta api spa
 removeAll: check removeSpa removeApi destroyOkta
 
 .PHONY: planOkta
-planOkta: 
+planOkta:
 	@cd ${TERRAFORM} && \
 	terraform init && \
 	terraform plan -out=okta.setup.tfplan -lock=false
@@ -74,7 +74,7 @@ destroyOkta: destroyOktaPlan
 	terraform apply -auto-approve okta.delete.tfplan
 
 .PHONY: createEnvJson
-createEnvJson: 
+createEnvJson:
 	@cd ${TERRAFORM} && \
 	terraform output api_env_json | sed -e "s/^<<EOT//" -e "s/EOT$$//" > ../${API_DIR}/.env.json
 
@@ -86,16 +86,16 @@ setupApi: createEnvJson
 .PHONY: api
 api: setupApi
 	@cd ${API_DIR} && \
-	serverless deploy -v
+	serverless deploy --verbose
 
 .PHONY: removeApi
-removeApi: 
+removeApi:
 	@cd ${API_DIR} && \
-	serverless remove -v && \
+	serverless remove --verbose && \
 	rm -rf node_modules
 
 .PHONY: createEnvLocal
-createEnvLocal: 
+createEnvLocal:
 	@cd ${TERRAFORM} && \
 	terraform output vue_env_dev | sed -e "s/^<<EOT//" -e "s/EOT$$//" > ../${SPA_DIR}/.env.development.local
 
@@ -120,12 +120,12 @@ spa: setupSpa
 # ========================================================================
 #   Experimental - for CloudFront, S3, Route53 setup in AWS for the SPA
 #	@cd ${SPA_DIR} && \
-#	serverless deploy -v
+#	serverless deploy --verbose
 
 .PHONY: removeSpa
-removeSpa: 
+removeSpa:
 	@cd ${SPA_DIR} && \
-	serverless remove -v && \
+	serverless remove --verbose && \
 	rm -rf node_modules dist
 
 .PHONY: dacOkta
