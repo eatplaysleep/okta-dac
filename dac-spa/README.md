@@ -1,52 +1,62 @@
+<!-- @format -->
+
 # Single Page Application (Local Installation)
 
 ## Prerequisites
-* Install [vuecli](https://cli.vuejs.org/#getting-started)
 
-   e.g. via npm:
+- Install [vuecli](https://cli.vuejs.org/#getting-started)
 
-   ```
-   npm install @vue/cli -g
-   ```
+  e.g. via npm:
 
-   Note: if you get WARN/ERR on MacOS, run:
+  ```
+  npm install @vue/cli -g
+  ```
 
-   ```
-   sudo npm install -g @vue/cli --unsafe-perm
-   ```
+  Note: if you get WARN/ERR on MacOS, run:
+
+  ```
+  sudo npm install -g @vue/cli --unsafe-perm
+  ```
 
 ## Make
+
 1. Use the provided Makefile to generate the local env file using outputs from previous makes. From the `/okta-dac` (root) folder (that contains the Makefile), run
-    ```
-    make spa
-    ```
-    This generates the `.env.development.local` file in the `/okta-dac` folder and populates it with the necessary values.
+
+   ```
+   make spa
+   ```
+
+   This generates the `.env.development.local` file in the `/okta-dac` folder and populates it with the necessary values.
 
 2. Then, compile for development environment. `cd` into the `/okta-dac` folder and run
-    ```
-    npm run serve
-    ```
+   ```
+   npm run serve
+   ```
 3. Open your browser to `http://localhost:8080` and login
 
 ## Manual Setup
+
 **If you prefer not to use the makefile, then follow these steps:**
 
 ### Config File
+
 1. `cd` into `/dac-spa`, then:
 2. Run `npm install`
 3. Create env file `.env.development.local` (In that same `/dac-spa` directory. Note: there is an existing `.env` file. Do not touch that file; Add this `.local` in addition to it). Edit it in with the values below:
-    ```
-    VUE_APP_CLIENT_ID=<<client id here>>
-    VUE_APP_ISSUER=<<issuer uri here>>
-    VUE_APP_ENFORCE_DOMAIN_CHECK=true
-    VUE_APP_API=<<rest api endpoint>
-    ```
-    Where the above variables are:
-   | Variable                     | Where to find |
+
+   ```
+   VUE_APP_CLIENT_ID=<<client id here>>
+   VUE_APP_ISSUER=<<issuer uri here>>
+   VUE_APP_ENFORCE_DOMAIN_CHECK=true
+   VUE_APP_API=<<rest api endpoint>
+   ```
+
+   Where the above variables are:
+   | Variable | Where to find |
    | ---------------------------- |:------------- |
-   | VUE_APP_CLIENT_ID            | The `client_id` of the Okta App. In Okta, search for the app named `okta-dac` (that was provisioned by terraform) |
-   | VUE_APP_ISSUER               | The `issuer_uri` of the Auth Server. In Okta, search for the Authorization Server named `okta-dac` (that was provisioned by terraform) |
-   | VUE_APP_API                  | The api base url of the API that was deployed |
+   | VUE_APP_CLIENT_ID | The `client_id` of the Okta App. In Okta, search for the app named `okta-dac` (that was provisioned by terraform) |
+   | VUE_APP_ISSUER | The `issuer_uri` of the Auth Server. In Okta, search for the Authorization Server named `okta-dac` (that was provisioned by terraform) |
+   | VUE_APP_API | The api base url of the API that was deployed |
    | VUE_APP_ENFORCE_DOMAIN_CHECK | DAC enforces that Tenant Admins add users with emails that match only verified domains. However, this may be difficult if you want to test with usernames having `@mailinator.com` (for example). Simply set to `false` and DAC will stop validating domains. |
 
 4. The following command compiles and hot-reloads for development environment
@@ -61,9 +71,10 @@
 
 ## Webfinger and Domain Verification Plugin
 
-This project uses Okta routing rules (idp discovery) by default. Due to known scaling limitations, it is advisable to not use the okta idp discovery functionality if expecting 10,000s of inbound IdPs (1000s are fine). If you anticipate an extremely large number of inbound federation with idp-discovery, then: 
-* Deploy the [okta-dac-domains-serverless](https://github.com/udplabs/okta-dac-domains-serverless) microservice instead.
-* Add the following setting in the `.env` file:
+This project uses Okta routing rules (idp discovery) by default. Due to known scaling limitations, it is advisable to not use the okta idp discovery functionality if expecting 10,000s of inbound IdPs (1000s are fine). If you anticipate an extremely large number of inbound federation with idp-discovery, then:
+
+- Deploy the [okta-dac-domains-serverless](https://github.com/udplabs/okta-dac-domains-serverless) microservice instead.
+- Add the following setting in the `.env` file:
 
 ```sh
 VUE_APP_USE_WEBFINGER_PLUGIN=true
@@ -84,4 +95,3 @@ VUE_APP_LOGO=https://cdn.freelogovectors.net/wp-content/uploads/2018/05/workday-
 VUE_APP_MAINCOLOR=#ffa126
 VUE_APP_COMPANY_NAME=Workday
 ```
-
