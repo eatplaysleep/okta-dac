@@ -1,3 +1,5 @@
+# @format
+
 # OKTA DAC API TENANTS
 
 service: okta-dac-api
@@ -12,6 +14,8 @@ service: okta-dac-api
 plugins:
   - serverless-offline
 
+variablesResolutionMode: 20210326
+
 custom:
   env: ${file(./.env.json)}
   ssmPrefix: ${self:custom.env.AWS_SSM_PREFIX}
@@ -22,14 +26,14 @@ provider:
   profile: ${self:custom.env.AWS_PROFILE} # This should match what's in /terraform/terraform.tfvars
   region: ${self:custom.env.AWS_REGION} # This should match what's in /terraform/terraform.tfvars
   stage: ${self:custom.env.ENVIRONMENT} # This should match what's in /terraform/terraform.tfvars
-  lambdaHashingVersion: "20201221"
+  lambdaHashingVersion: '20201221'
   apiGateway:
     shouldStartNameWithService: true
   environment:
     ISSUER: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/issuer-uri}
     AUDIENCE: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/audience}
     CLIENT_ID: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/client-id}
-    OKTA_API_KEY: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/api-token~true}
+    OKTA_API_KEY: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/api-token}
     TEMPLATE_CERT: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/dummy-cert}
     IDP_DISCO_POLICY_ID: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/okta-idp-disco-policyId}
     DNS_VERIFY_PREFIX: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/dns-verify-prefix}
