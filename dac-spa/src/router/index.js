@@ -110,7 +110,7 @@ const oktaAuth = new OktaAuth({
   redirectUri: config.oidc.redirect_uri,
   scopes: config.oidc.scope.split(" "),
   pkce: true,
-  onSessionExpired: function() {
+  onSessionExpired: function () {
     window.location.href = "/login";
   },
 });

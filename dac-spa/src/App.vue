@@ -140,7 +140,9 @@ export default {
     },
     gravatar() {
       return this.user
-        ? "https://www.gravatar.com/avatar/" + md5(this.user.preferred_username) + "?d=robohash"
+        ? "https://www.gravatar.com/avatar/" +
+            md5(this.user.preferred_username) +
+            "?d=robohash"
         : "";
     },
     isTenantAdmin() {
@@ -150,7 +152,7 @@ export default {
     },
     tenants() {
       return this.isTenantAdmin
-        ? this.user.tenants.map(function(tenant) {
+        ? this.user.tenants.map(function (tenant) {
             return { name: tenant.split(":")[1] };
           })
         : [];
