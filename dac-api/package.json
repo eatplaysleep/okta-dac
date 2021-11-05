@@ -1,20 +1,25 @@
 {
-  "name": "dac-api",
-  "version": "1.0.0",
-  "description": "Delegated Admin Console API for AWS",
-  "main": "handler.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@okta/jwt-verifier": "^2.0.0",
-    "aws-auth-policy": "^0.1.0",
-    "axios": "^0.21.1",
-    "uuid4": "^2.0.2"
-  },
-  "devDependencies": {
-    "serverless-offline": "^6.8.0"
-  }
+	"name": "dac-api",
+	"version": "1.0.0",
+	"description": "Delegated Admin Console API for AWS",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oktadev/okta-dac"
+	},
+	"main": "handler.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@okta/jwt-verifier": "^2.0.0",
+		"aws-auth-policy": "^0.1.0",
+		"axios": "^0.21.1",
+		"uuid4": "^2.0.2"
+	},
+	"devDependencies": {
+		"serverless": "^2.65.0",
+		"serverless-offline": "^6.8.0"
+	}
 }
