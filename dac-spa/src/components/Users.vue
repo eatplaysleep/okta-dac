@@ -185,17 +185,24 @@ export default {
 		async getGroupStats() {
 			if (!this.groupId) {
 				const claims = await this.$auth.getUser();
-				this.groupId = claims.tenants[0].split(':')[2];
+				this.groupId =
+					claims?.tenants?.length > 0
+						? claims?.tenants[0].split(':')[2]
+						: undefined;
 				this.editedItem.groupId = this.groupId;
 			}
-			const groupInfo = await axios.get(
-				this.$config.api + '/api/v1/groups/' + this.groupId + '?expand=stats',
-				{ headers: { Authorization: 'Bearer ' + this.o4oToken } }
-			);
-			if (Object.prototype.hasOwnProperty.call(groupInfo.data, '_embedded')) {
-				this.totalUsers = groupInfo.data._embedded.stats.usersCount;
+			if (this.editedItem?.groupId) {
+				const groupInfo = await axios.get(
+					this.$config.api + '/api/v1/groups/' + this.groupId + '?expand=stats',
+					{ headers: { Authorization: 'Bearer ' + this.o4oToken } }
+				);
+				if (Object.prototype.hasOwnProperty.call(groupInfo.data, '_embedded')) {
+					this.totalUsers = groupInfo.data._embedded.stats.usersCount;
+				} else {
+					console.log('Wasnt able to get User count');
+				}
 			} else {
-				console.log('Wasnt able to get User count');
+				console.log('No groupId!');
 			}
 		},
 		getColor(status) {
