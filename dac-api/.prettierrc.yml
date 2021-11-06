@@ -1,0 +1,8 @@
+# @format
+
+arrowParens: 'avoid'
+insertPragma: true
+singleQuote: true
+useTabs: true
+printWidth: 80
+semi: true
