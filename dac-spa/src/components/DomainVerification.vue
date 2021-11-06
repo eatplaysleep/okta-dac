@@ -146,8 +146,14 @@ export default {
 	name: 'domain-verification',
 	data() {
 		return {
-			verificationStep: 1,
-			domainName: undefined,
+			verificationStep: !this.newDomain.new && !this.newDomain.verified ? 2 : 1,
+			domain: {
+				created: undefined,
+				name: newDomain?.domain,
+				new: newDomain?.new,
+				verified: newDomain?.verified,
+				verificationString: undefined,
+			},
 			headers: ['Name', 'Type', 'Value'],
 			validating: false,
 			duplicateDomainFound: undefined,
@@ -177,12 +183,12 @@ export default {
 					title: 'Verify Domain Name Ownership',
 					content:
 						'Add the following TXT record to the DNS configuration for ' +
-						this.domainName,
+						this.domain.name,
 				},
 				{
 					title: this.duplicateDomainFound ? 'Duplicate Domain' : 'Success!',
 					content:
-						this.domainName +
+						this.domain.name +
 						(this.duplicateDomainFound
 							? ' is already taken.'
 							: ' has been successfully added.'),
@@ -193,34 +199,35 @@ export default {
 			if (this.validating) return false;
 			else
 				return (
-					this.domainName &&
-					this.domainName.length > 0 &&
+					this.domain.name &&
+					this.domain.name.length > 0 &&
 					!this.duplicateDomainFound
 				);
 		},
 		domainVerification() {
-			return this.$config.dnsVerificationPrefix + '.' + this.domainName;
+			return this.$config.dnsVerificationPrefix + '.' + this.domain.name;
 		},
 	},
 	components: {
 		CopyToClipboard,
 	},
-	created() {
-		this.setup();
-	},
+	// created() {
+	// 	this.setup();
+	// },
 	watch: {
 		newDomain: 'setup',
 	},
 	methods: {
-		setup() {
-			this.verificationStep =
-				!this.newDomain.new && !this.newDomain.verified ? 2 : 1;
-			this.domainName = this.newDomain.domain;
-			this.validating = false;
-			this.duplicateDomainFound = undefined;
-			this.typingDelayTimer = undefined;
-			this.waiting = false;
-		},
+		// setup() {
+		// 	this.verificationStep =
+		// 		!this.domain?.new && !this.domain?.verified ? 2 : 1;
+		// 		// !this.newDomain.new && !this.newDomain.verified ? 2 : 1;
+		// 	this.domain.name = this.newDomain.domain;
+		// 	this.validating = false;
+		// 	this.duplicateDomainFound = undefined;
+		// 	this.typingDelayTimer = undefined;
+		// 	this.waiting = false;
+		// },
 		validate_domain_on_keyup(input) {
 			this.duplicateDomainFound = undefined;
 			if (this.typingDelayTimer) clearTimeout(this.typingDelayTimer);
@@ -256,7 +263,7 @@ export default {
 					res = await axios.post(
 						this.$config.apiWebfinger + '/verifications',
 						{
-							domain: this.domainName,
+							domain: this.domain.name,
 							tenant: this.tenant.name,
 							idp: this.tenant.id,
 						},
@@ -266,18 +273,22 @@ export default {
 					res = await axios.post(
 						this.$config.api + '/tenants/' + this.tenant.name + '/domains',
 						{
-							domain: this.domainName,
+							domain: this.domain.name,
 							verified: false,
 						},
 						{ headers: { Authorization: 'Bearer ' + accessToken } }
 					);
 				}
-				this.newDomain.verificationString = res.data.dnsVerificationString;
-				this.newDomain.domain = res.data.domain;
-				this.newDomain.created = res.data.created;
-				this.newDomain.new = false;
+				// this.newDomain.verificationString = res.data.dnsVerificationString;
+				// this.newDomain.domain = res.data.domain;
+				// this.newDomain.created = res.data.created;
+				// this.newDomain.new = false;
 				// this.newDomain.tenant = res.data.tenant;
 				// this.newDomain.idp = res.data.idp;
+				this.domain.verificationString = res.data.dnsVerificationPrefix;
+				this.domain.domain = res.data.domain;
+				this.domain.created = res.data.created;
+				this.domain.new = false;
 
 				this.verificationStep = 2;
 			} catch (e) {
@@ -304,10 +315,10 @@ export default {
 				const res = await axios.put(
 					url,
 					{
-						domain: this.domainName,
+						domain: this.domain.name,
 						tenant: this.tenant.name,
 						idp: this.tenant.id,
-						dnsVerificationString: this.newDomain.verificationString,
+						dnsVerificationString: this.domain.verificationString,
 					},
 					{ headers: { Authorization: 'Bearer ' + accessToken } }
 				);
@@ -329,20 +340,30 @@ export default {
 							this.$store.commit('setVerifiedDomains', tenant);
 						}
 					});
-					this.newDomain.domain = res.data.domain;
-					this.newDomain.created = res.data.created;
-					this.newDomain.new = false;
-					this.newDomain.verified = true;
+					// this.newDomain.domain = res.data.domain;
+					// this.newDomain.created = res.data.created;
+					// this.newDomain.new = false;
+					// this.newDomain.verified = true;
 					// this.newDomain.tenant = res.data.tenant;
 					// this.newDomain.idp = res.data.idp;
+
+					this.domain.domain = res.data.domain;
+					this.domain.created = res.data.created;
+					this.domain.new = false;
+					this.domain.verified = true;
 
 					this.verificationStep = 3;
 				}
 			} catch (e) {
 				console.log(e);
-				this.newDomain.domain = undefined;
-				this.newDomain.created = undefined;
-				this.newDomain.new = true;
+				// this.newDomain.domain = undefined;
+				// this.newDomain.created = undefined;
+				// this.newDomain.new = true;
+
+				this.domain.domain = res.data.domain;
+				this.domain.created = res.data.created;
+				this.domain.new = true;
+
 				this.duplicateDomainFound = this.dupErrorMessage(e);
 				this.verificationStep = 3;
 			}

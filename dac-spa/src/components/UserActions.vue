@@ -91,6 +91,7 @@ export default {
 			loading: false,
 			loaded: false,
 			links: [],
+			userLocal: this.user,
 			actions: [
 				{
 					type: 'activate',
@@ -260,9 +261,9 @@ export default {
 						{ headers: { Authorization: 'Bearer ' + token } }
 					);
 					this.links = user.data._links;
-					this.user.status = user.data.status;
+					this.userLocal.status = user.data.status;
 				}
-				this.$emit('save');
+				this.$emit('save', this.userLocal);
 			} catch (e) {
 				this.$emit('interrupt');
 			}

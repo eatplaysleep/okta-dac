@@ -123,7 +123,7 @@
 			<DomainVerification
 				@close="dialog = false"
 				@cancel="validationCancel"
-				:newDomain="newDomain"
+				:newDomain.sync="newDomain"
 				:tenant="tenant"
 			></DomainVerification>
 		</v-dialog>

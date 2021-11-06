@@ -16,7 +16,7 @@
 			>
 			<v-spacer></v-spacer>
 			<UserActions
-				:user="user"
+				:user.sync="user"
 				:disabled="loading"
 				:linksIn="linksIn"
 				v-on:saving="loading = true"
@@ -37,7 +37,7 @@
 								<v-row>
 									<v-col sm="12" md="12">
 										<v-text-field
-											v-model="user.email"
+											v-model="userLocal.email"
 											label="Email"
 											:rules="emailRules"
 											required
@@ -50,7 +50,7 @@
 								<v-row>
 									<v-col sm="12" md="6">
 										<v-text-field
-											v-model="user.firstName"
+											v-model="userLocal.firstName"
 											label="First name"
 											:rules="requiredRules"
 											required
@@ -59,7 +59,7 @@
 									</v-col>
 									<v-col sm="12" md="6">
 										<v-text-field
-											v-model="user.lastName"
+											v-model="userLocal.lastName"
 											label="Last Name"
 											:rules="requiredRules"
 											required
@@ -74,7 +74,7 @@
 			</v-tab-item>
 			<v-tab-item key="apps">
 				<AppAssignments
-					:user="user"
+					:user.sync="user"
 					:apps="apps"
 					:loading="loading"
 					scope="user"
@@ -85,7 +85,7 @@
 			<v-tab-item key="roles">
 				<v-card flat outlined class="pa-0">
 					<v-card-text>
-						<v-checkbox label="Tenant Admin" v-model="user.adminFlag">
+						<v-checkbox label="Tenant Admin" v-model="userLocal.adminFlag">
 						</v-checkbox>
 					</v-card-text>
 				</v-card>
@@ -135,6 +135,7 @@ export default {
 			dupValidated: true,
 			duplicateFound: null,
 			copy: null,
+			userLocal: this.user,
 		};
 	},
 	components: {
@@ -213,12 +214,12 @@ export default {
 				const res = await axios.post(url, payload, {
 					headers: { Authorization: 'Bearer ' + token },
 				});
-				this.user.status = res.data.status;
-				this.user.id = res.data.id;
+				this.userLocal.status = res.data.status;
+				this.userLocal.id = res.data.id;
 				this.linksIn = res.data._links;
 
-				if (this.user.adminFlag != this.copy.adminFlag) {
-					if (this.user.adminFlag) {
+				if (this.userLocal.adminFlag != this.copy.adminFlag) {
+					if (this.userLocal.adminFlag) {
 						const claims = await this.$auth.getUser();
 						const accessToken = await this.$authn.getAccessToken();
 						await axios.put(
@@ -234,7 +235,7 @@ export default {
 				}
 
 				this.makeCopy();
-				this.$emit('save', this.user);
+				this.$emit('save', this.userLocal);
 			} catch (e) {
 				if (e.response.data.errorSummary == 'Api validation failed: login') {
 					this.duplicateFound = 'This email/username exists in another tenant';
@@ -252,7 +253,7 @@ export default {
 			this.apps = res.data;
 		},
 		async getGroups() {
-			if (!this.user || !this.user.id) {
+			if (!this.userLocal || !this.userLocal.id) {
 				this.groups = [];
 				return;
 			}
@@ -268,15 +269,15 @@ export default {
 			for (const grp of this.groups) {
 				if (grp.profile.name.startsWith('ADMINS')) {
 					this.copy.adminFlag = true;
-					this.user.adminFlag = true;
+					this.userLocal.adminFlag = true;
 					return;
 				}
 			}
 			this.copy.adminFlag = false;
-			this.user.adminFlag = false;
+			this.userLocal.adminFlag = false;
 		},
 		async markApps() {
-			if (!this.user || !this.user.id) {
+			if (!this.user || !this.userLocal.id) {
 				const self = this;
 				setTimeout(function () {
 					self.apps.forEach(app => {
@@ -307,7 +308,7 @@ export default {
 			const self = this;
 			this.typingDelayTimer = setTimeout(async function () {
 				if (self.$config.enforceDomainCheck == 'true') {
-					const unverified = self.user.email.split('@')[1];
+					const unverified = self.userLocal.email.split('@')[1];
 					let verified = false;
 					const verifiedDomains = self.$store.state.verifiedDomains;
 					verifiedDomains.forEach(tenant => {
@@ -340,10 +341,10 @@ export default {
 				}
 			}, 700);
 		},
-		userActionEmittedSave() {
+		userActionEmittedSave(data) {
 			this.loading = false;
 			this.makeCopy();
-			this.$emit('save', this.user);
+			this.$emit('save', data);
 		},
 	},
 };

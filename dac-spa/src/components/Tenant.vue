@@ -18,7 +18,7 @@
 							:outlined="!readonly"
 							:filled="!readonly"
 							:label="$t('tenant')"
-							v-model="tenant.name"
+							v-model="tenantLocal.name"
 							:rules="nameRules"
 							:error-messages="duplicateFound"
 							:disabled="readonly || saving"
@@ -36,7 +36,7 @@
 								class="px-2"
 								required
 								label="Email"
-								v-model="tenant.adminEmail"
+								v-model="tenantLocal.adminEmail"
 								:rules="emailRules"
 								:error-messages="duplicateEmailFound"
 								:disabled="saving"
@@ -51,7 +51,7 @@
 								required
 								:rules="requiredRules"
 								label="First Name"
-								v-model="tenant.adminFN"
+								v-model="tenantLocal.adminFN"
 								:disabled="saving"
 							></v-text-field>
 						</v-col>
@@ -61,7 +61,7 @@
 								required
 								:rules="requiredRules"
 								label="Last Name"
-								v-model="tenant.adminLN"
+								v-model="tenantLocal.adminLN"
 								:disabled="saving"
 							></v-text-field>
 						</v-col>
@@ -166,6 +166,7 @@ export default {
 			duplicateEmailFound: null,
 			dupEmailValidated: false,
 			o4oToken: null,
+			tenantLocal: this.tenant,
 		};
 	},
 	components: {
@@ -174,11 +175,11 @@ export default {
 	},
 	computed: {
 		title() {
-			return this.tenant.name != '' ? this.tenant.name : 'New';
+			return this.tenantLocal.name != '' ? this.tenantLocal.name : 'New';
 		},
 	},
 	async updated() {
-		if (this.tenant.name == '') {
+		if (this.tenantLocal.name == '') {
 			this.$refs.form.resetValidation();
 			this.typingDelayTimer1 = null;
 			this.duplicateFound = null;
@@ -209,7 +210,7 @@ export default {
 				const r1 = await axios.post(
 					this.$config.api + '/tenants',
 					{
-						name: this.tenant.name,
+						name: this.tenantLocal.name,
 					},
 					{ headers: { Authorization: 'Bearer ' + accessToken } }
 				);
@@ -219,10 +220,10 @@ export default {
 					this.$config.api + '/api/v1/users',
 					{
 						profile: {
-							firstName: this.tenant.adminFN,
-							lastName: this.tenant.adminLN,
-							email: this.tenant.adminEmail,
-							login: this.tenant.adminEmail,
+							firstName: this.tenantLocal.adminFN,
+							lastName: this.tenantLocal.adminLN,
+							email: this.tenantLocal.adminEmail,
+							login: this.tenantLocal.adminEmail,
 						},
 						groupIds: [r1.data.USERS_groupId],
 					},
@@ -233,14 +234,14 @@ export default {
 				const r3 = await axios.put(
 					this.$config.api +
 						'/tenants/' +
-						this.tenant.name +
+						this.tenantLocal.name +
 						'/admins/' +
 						r2.data.id,
 					null,
 					{ headers: { Authorization: 'Bearer ' + accessToken } }
 				);
-				this.tenant.created = r1.data.created;
-				this.tenant.id = r1.data.id;
+				this.tenantLocal.created = r1.data.created;
+				this.tenantLocal.id = r1.data.id;
 				this.tenantAdmins = [
 					{
 						profile: r2.data.profile,
@@ -265,7 +266,7 @@ export default {
 		async listAdmins() {
 			this.tenantAdmins = [];
 			this.loadingAdmins = true;
-			if (!this.tenant.id) {
+			if (!this.tenantLocal.id) {
 				this.loadingAdmins = false;
 				return;
 			}
@@ -291,7 +292,7 @@ export default {
 				this.availableApps = pre.data;
 			}
 			let active = [];
-			if (this.tenant.name && this.tenant.name.length > 0) {
+			if (this.tenantLocal.name && this.tenantLocal.name.length > 0) {
 				const res = await axios.get(
 					this.$config.api + '/tenants/' + this.tenant.name + '/apps',
 					{ headers: { Authorization: 'Bearer ' + accessToken } }
@@ -319,11 +320,11 @@ export default {
 			}
 			const self = this;
 			this.typingDelayTimer1 = setTimeout(async function () {
-				if (!self.tenant.name || self.tenant.name.length <= 0) return;
+				if (!self.tenantLocal.name || self.tenantLocal.name.length <= 0) return;
 				const accessToken = await self.$auth.getAccessToken();
 				try {
 					const res = await axios.get(
-						self.$config.api + '/tenants/' + self.tenant.name,
+						self.$config.api + '/tenants/' + self.tenantLocal.name,
 						{ headers: { Authorization: 'Bearer ' + accessToken } }
 					);
 					if (res.status == 200)
@@ -341,7 +342,10 @@ export default {
 			}
 			const self = this;
 			this.typingDelayTimer2 = setTimeout(async function () {
-				if (!self.tenant.adminEmail || self.tenant.adminEmail.length <= 0)
+				if (
+					!self.tenantLocal.adminEmail ||
+					self.tenantLocal.adminEmail.length <= 0
+				)
 					return;
 				await self.$auth.getAccessToken();
 				try {
