@@ -1,7 +1,8 @@
 # @format
 
 arrowParens: 'avoid'
-insertPragma: true
+insertPragma: false
+requirePragma: true
 singleQuote: true
 useTabs: true
 printWidth: 80

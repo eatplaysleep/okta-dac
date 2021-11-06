@@ -10,7 +10,6 @@ module.exports = {
 		'plugin:prettier-vue/recommended',
 		'prettier',
 	],
-	plugins: ['prettier'],
 	parserOptions: {
 		parser: 'babel-eslint',
 	},
@@ -68,30 +67,6 @@ module.exports = {
 			 * @default true
 			 */
 			usePrettierrc: true,
-
-			/**
-			 * Set the options for `prettier.getFileInfo`.
-			 *
-			 * @see https://prettier.io/docs/en/api.html#prettiergetfileinfofilepath-options
-			 */
-			fileInfoOptions: {
-				/**
-				 * Path to ignore file
-				 *
-				 * @default '.prettierignore'
-				 *
-				 * Notice that the ignore file is only used for this plugin
-				 */
-				ignorePath: '.testignore',
-
-				/**
-				 * Process the files in `node_modules` or not
-				 *
-				 * @default false
-				 *
-				 * */
-				withNodeModules: false,
-			},
 		},
 		rules: {
 			'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
