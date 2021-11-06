@@ -96,19 +96,6 @@ module.exports = {
 		rules: {
 			'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 			'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-			'prettier-vue/prettier': {
-				/**
-				 * Override all options of `prettier` here instead of in `.prettierrc.json`
-				 *
-				 * @see https://prettier.io/docs/en/options.html
-				 */
-				arrowParens: 'avoid',
-				insertPragma: true,
-				singleQuote: true,
-				useTabs: true,
-				printWidth: 80,
-				semi: true,
-			},
 		},
 	},
 };
