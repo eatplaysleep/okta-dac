@@ -5,6 +5,7 @@ variable "org_name" {
 
 variable "api_token" {
   type = string
+  sensitive = true
 }
 
 variable "base_url" {
