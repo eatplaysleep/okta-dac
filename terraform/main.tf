@@ -11,7 +11,7 @@ provider "okta" {
 
 # Local variables
 locals {
-  app_name                = "okta-dac"
+  app_name = "okta-dac"
 }
 
 variable "sleep" {
@@ -206,7 +206,7 @@ resource "okta_auth_server_policy_rule" "okta-dac-catch-all" {
 }
 
 # A dummy app so that we can grab the Okta cert for TEMPLATE_CERT env variable
-resource okta_app_saml dac-dummy-saml {
+resource "okta_app_saml" "dac-dummy-saml" {
   label                    = "dac-dummy-saml"
   sso_url                  = "http://example.com"
   recipient                = "http://example.com"
