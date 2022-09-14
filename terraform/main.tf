@@ -62,7 +62,7 @@ resource "okta_app_oauth" "okta-dac" {
   issuer_mode                = "ORG_URL"
   consent_method             = "TRUSTED"
   lifecycle {
-    ignore_changes = [groups, users]
+    ignore_changes = [users]
   }
 }
 

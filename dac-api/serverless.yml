@@ -3,8 +3,8 @@
 service: okta-dac-api
 
 # # app and org for use with dashboard.serverless.com
-# app: dac-api-tenants
-# org: rschallerokta
+app: okta-dac-api
+org: eatplaysleep
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -22,14 +22,13 @@ provider:
   profile: ${self:custom.env.AWS_PROFILE} # This should match what's in /terraform/terraform.tfvars
   region: ${self:custom.env.AWS_REGION} # This should match what's in /terraform/terraform.tfvars
   stage: ${self:custom.env.ENVIRONMENT} # This should match what's in /terraform/terraform.tfvars
-  lambdaHashingVersion: "20201221"
   apiGateway:
     shouldStartNameWithService: true
   environment:
     ISSUER: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/issuer-uri}
     AUDIENCE: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/audience}
     CLIENT_ID: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/client-id}
-    OKTA_API_KEY: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/api-token~true}
+    OKTA_API_KEY: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/api-token}
     TEMPLATE_CERT: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/dummy-cert}
     IDP_DISCO_POLICY_ID: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/okta-idp-disco-policyId}
     DNS_VERIFY_PREFIX: ${ssm:/${self:custom.ssmPrefix}/okta/${self:provider.stage}/dns-verify-prefix}
