@@ -12,6 +12,10 @@ variable "base_url" {
   default = "okta.com" #"oktapreview.com" if using non-prod.
 }
 
+variable "app_name" {
+  type    = string
+  default = "okta-dac"
+}
 variable "app_url" {
   type    = string
   default = "http://localhost:8080"

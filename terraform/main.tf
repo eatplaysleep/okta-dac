@@ -11,7 +11,7 @@ provider "okta" {
 
 # Local variables
 locals {
-  app_name = "okta-dac"
+  app_name = var.environment != "prod" ? "${var.app_name}-${var.environment}" : var.app_name
 }
 
 variable "sleep" {
@@ -86,7 +86,7 @@ resource "okta_app_group_assignment" "okta-dac" {
 
 # Create Trusted Origin for the APP
 resource "okta_trusted_origin" "okta-dac" {
-  name   = "DAC SPA"
+  name   = var.app_url
   origin = var.app_url
   scopes = ["CORS", "REDIRECT"]
 }
