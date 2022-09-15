@@ -5,7 +5,6 @@ import OktaVue, { LoginCallback } from '@okta/okta-vue';
 import authn from '@/plugins/authn';
 import Home from '@/views/Home.vue';
 import Activate from '@/components/Activate';
-import LoginComponent from '@/components/Login';
 import Tenants from '@/components/Tenants';
 // import AppMaster from "@/components/AppMaster";
 // import Applications from "@/components/Applications";
