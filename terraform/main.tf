@@ -59,7 +59,7 @@ resource "okta_app_oauth" "okta-dac" {
   grant_types                = ["authorization_code"]
   response_types             = ["code"]
   token_endpoint_auth_method = "none"
-  issuer_mode                = "ORG_URL"
+  issuer_mode                = "DYNAMIC"
   consent_method             = "TRUSTED"
   lifecycle {
     ignore_changes = [users]
@@ -95,6 +95,7 @@ resource "okta_trusted_origin" "okta-dac" {
 resource "okta_auth_server" "okta-dac" {
   audiences   = ["api://${local.app_name}"]
   description = "Okta DAC Authorization Server"
+  issuer_mode = "DYNAMIC"
   name        = local.app_name
 }
 
