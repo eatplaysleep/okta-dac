@@ -99,9 +99,6 @@ const oktaAuth = new OktaAuth({
 	...oidcConfig,
 	scopes: typeof config.oidc.scope === 'string' ? config.oidc.scope.split(' ') : config.oidc.scope,
 	pkce: true,
-	onSessionExpired: function () {
-		window.location.href = '/login';
-	},
 });
 
 Vue.use(OktaVue, {
