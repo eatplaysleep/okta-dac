@@ -90,7 +90,6 @@ const router = new Router({
 });
 
 config.oidc.redirect_uri = window.location.protocol + '//' + window.location.host + config.oidc.redirect_uri;
-console.log(config.oidc);
 
 const { client_id: clientId, redirect_uri: redirectUri, ...oidcConfig } = config.oidc;
 
